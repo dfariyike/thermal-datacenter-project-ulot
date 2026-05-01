@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermal Infrastructure Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
+        .header { border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: #00b894; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; }
+        .card { background: #1e1e1e; border: 1px solid #333; padding: 20px; border-radius: 8px; }
+        .card h2 { margin-top: 0; font-size: 1.2rem; color: #fdcb6e; }
+        img { width: 100%; border-radius: 4px; margin-top: 10px; border: 1px solid #444; }
+        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .stat-box { background: #252525; padding: 15px; border-radius: 4px; flex: 1; margin: 0 5px; text-align: center; }
+        .stat-val { font-size: 1.2rem; font-weight: bold; color: #00b894; }
+        
+        .audit-note { margin-top: 15px; padding: 12px; border-left: 4px solid #d9534f; background: #2d1a1a; font-size: 0.9rem; line-height: 1.4; }
+        .insight-note { margin-top: 15px; padding: 12px; border-left: 4px solid #5bc0de; background: #1a262d; font-size: 0.9rem; font-style: italic; line-height: 1.4; }
+        .root-cause-card { border: 1px solid #e67e22; background: #1e1e1e; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .failure-note { margin-top: 15px; padding: 12px; border-left: 4px solid #f1c40f; background: #2a261a; font-size: 0.9rem; line-height: 1.4; }
+        
+        ul { padding-left: 20px; color: #b0b0b0; font-size: 0.95rem; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Critical Infrastructure Thermal Audit</h1>
+        <p>Project: 42U Server Rack Optimization | Lead: David Fariyike</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box"><div>Total Heat Load</div><div class="stat-val">12,758.6 W</div></div>
+        <div class="stat-box"><div>Peak Inlet</div><div class="stat-val">28.6°C</div></div>
+        <div class="stat-box"><div>RCI High</div><div class="stat-val">98.2%</div></div>
+        <div class="stat-box"><div>Status</div><div class="stat-val" style="color:#e67e22">Marginal (Exceeds ASHRAE Recommended)</div></div>
+    </div>
+
+    <div class="root-cause-card">
+        <h2 style="color:#e67e22; margin-top:0;">Root Cause Analysis</h2>
+        <p style="margin-bottom:0;">Steady-state analysis at 100% fan capacity reveals that 100% of inlets operate within the <strong>Marginal Zone</strong> (Above 27&deg;C Recommended, Below 32&deg;C Allowable). This is driven by <strong>recirculation (&Delta;T 5-6&deg;C)</strong>, leaving the infrastructure with zero thermal buffer during transient cooling degradation events.</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Configuration & Methodology</h2>
+            <ul>
+                <li><strong>Hardware:</strong> 42U Vertical Rack Chassis</li>
+                <li><strong>Power Density:</strong> 12,758.6 W (High-Density Load)</li>
+                <li><strong>Steady-State Baseline:</strong> 100% Fan Capacity</li>
+                <li><strong>Transient Audit State:</strong> 50% Fan Capacity (Failure Modeling)</li>
+                <li><strong>Compliance Standard:</strong> ASHRAE TC 9.9 Class A1</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>ASHRAE Compliance Audit</h2>
+            <p>Steady-State (100% Fans) vs. ASHRAE Envelopes.</p>
+            <img src="compliance_audit.png" alt="Compliance Plot">
+            <div class="audit-note">
+                <strong>Audit Finding:</strong> Inlets sit ~1.6&deg;C above Recommended limits. While below the absolute Max (Allowable), this indicates a lack of cooling redundancy for the current power density.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Airflow Recirculation Analysis</h2>
+            <p>Evaluating Supply Heat Index (SHI) at steady-state.</p>
+            <img src="recirculation_report.png" alt="Recirculation Plot">
+            <div class="insight-note">
+                <strong>Analysis Insight:</strong> High recirculation confirms that exhaust heat is bypassing secondary containment, directly impacting the inlet thermal margin.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Transient Ride-Through (TTF)</h2>
+            <p>Predicting Time-to-Failure (TTF) from 100% to 50% fan capacity.</p>
+            <img src="time_to_failure.png" alt="Transient Plot">
+            <div class="failure-note" style="border-left-color: #d9534f; background: #2d1a1a;">
+                <strong>Simulation Note:</strong> Due to the marginal steady-state baseline, the "Time-to-Failure" for exceeding <strong>Allowable</strong> limits is significantly compressed.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
